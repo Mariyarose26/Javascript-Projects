@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
+  <!-- Go to https://keycode.info/  to find a sound for each key on the keyboard -->
 
   <div class="keys">
     <div data-key="65" class="key">
@@ -56,11 +56,34 @@
   <audio data-key="74" src="sounds/snare.wav"></audio>
   <audio data-key="75" src="sounds/tom.wav"></audio>
   <audio data-key="76" src="sounds/tink.wav"></audio>
-
+  const sayHello = (name) => {
+    return `Hello, ${name}!`;
+  };
 <script>
-
+  const keys = document.querySelectorAll('.key'); // Selects all keys
+  const clicked = (e) => {
+    let key = "";
+    if (e.type === 'mousedown') {
+      key = e.currentTarget.dataset.key;
+    } else {
+      key = e.keyCode;
+    }
+    // Specific key is selected
+    const audio = document.querySelector(`audio[data-key="${key}"]`); // Selects the audio equivalent of the key clicked
+    const element = document.querySelector(`div[data-key="${key}"]`);
+    console.log(element)
+    element.classList.add('playing'); // Adds a class 'playing' to the current key
+    audio.currentTime = 0; // Rewinds the audio clip to the start
+    audio.play(); // Plays the corresponding key
+    setTimeout(function() {
+      unclicked(element);
+    }, (1 * 1000));
+  }
+  const unclicked = (e) => {
+    e.classList.remove('playing'); // Removes the class 'playing' from the current key
+  }
+  keys.forEach(key => key.addEventListener('mousedown', clicked)); // If we click on the keys
+  window.addEventListener("keydown", clicked);   // Event listener to the window, listens
 </script>
-
-
 </body>
 </html>
