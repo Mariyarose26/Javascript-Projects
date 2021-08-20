@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>JS + CSS Clock</title>
+  <link rel="shortcut icon" href="#">
 </head>
 <body>
 
@@ -12,6 +13,7 @@
         <div class="hand hour-hand"></div>
         <div class="hand min-hand"></div>
         <div class="hand second-hand"></div>
+        <div class="pivot"></div>
       </div>
     </div>
 
@@ -58,17 +60,64 @@
 
     .hand {
       width: 50%;
+      z-index:900;
       height: 6px;
       background: black;
       position: absolute;
       top: 50%;
+      /* By default, when you try to rotate an object the center acts as the pivot, so this helps offset the pivot to the middle of the clock ->transform-origin */
+      transform-origin: 100%; 
+      /* By default the div "hand" is in the left aligned in the middle, to get 12 o'clock(Default) set rotate" */
+      transform: rotate(90deg);
+      /* Transition/Move the hande every second */
+      transition: all 0.5s;
+      /* To move the hand, with a ticking effect. cubic-bezier creates a graph like exponential function. click and graph in browser DOM find the right one*/
+      transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
     }
-
+    .second-hand {
+      height: 3px;
+      background-color: dimgray;
+      z-index:900;
+    }
+    .hour-hand {
+      height: 8px;
+      width: 40%;
+      left: 10%;
+      z-index:900;
+    }
+    .pivot {
+      width: 20px;
+      height: 20px;
+      margin-top: 48%;
+      display: inline-block;
+      z-index: 950;
+      border-radius: 50%;
+      background-color: black;
+    }
   </style>
 
   <script>
+    const secondHand = document.querySelector('.second-hand');
+    const minHand = document.querySelector('.min-hand');
+    const hourHand = document.querySelector('.hour-hand');
+    function setDate() {
+      // Defines now as the current time
+      const now = new Date();
+      // converts the seconds, mins and hour to degrees and offset by 90 to get -- to |
+      const seconds = now.getSeconds();
+      const secondDegrees = ((seconds / 60) * 360) + 90;
+      secondHand.style.transform = `rotate(${secondDegrees}deg)`;
 
+      const mins = now.getMinutes();
+      const minDegrees = ((mins / 60) * 360) + 90;
+      minHand.style.transform = `rotate(${minDegrees}deg)`;
 
+      const hours = now.getHours();
+      const hourDegrees = ((hours / 12) * 360) + 90;     
+      hourHand.style.transform = `rotate(${hourDegrees}deg)`;
+    }
+    setInterval(setDate, 1000);
   </script>
 </body>
 </html>
+ 
